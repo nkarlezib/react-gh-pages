@@ -22,7 +22,7 @@ io.sockets.on('connection', (socket) => {
         var date = new Date;
         var minutes = date.getMinutes();
         var hour = date.getHours();
-        today = hour + ':' + minutes;
+        var today = hour + ':' + minutes;
         io.emit('CHAT',{
             message: msg.message,
             name: msg.name,
