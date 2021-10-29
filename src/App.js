@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+const express = require('express');
+const react = require('react');
+const app = express();
+const engine = require('ejs-mate');
+const path = require('path');
+const http = require('http');
+const server = http.createServer(app);
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const { Server, Socket } = require("socket.io");
+const io = new Server(server);
 
-export default App;
+//settings
+app.engine('ejs', engine);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(require('./routes/index.js'));
+app.use(express.static(path.join(__dirname, './public')));
+
+io.sockets.on('connection', (socket) => {  
+    socket.on('CHAT', (msg) => {
+        var date = new Date;
+        var minutes = date.getMinutes();
+        var hour = date.getHours();
+        today = hour + ':' + minutes;
+        io.emit('CHAT',{
+            message: msg.message,
+            name: msg.name,
+            date: today
+        });
+    });
+
+    socket.on('FIX', msg => {
+        io.emit('FIX', {
+            code: msg.code
+        })
+    })
+  });
+
+server.listen(3000, (sockets) => {
+    console.log("listening on port 3000");
+})
