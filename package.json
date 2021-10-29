@@ -7,16 +7,24 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "ejs-mate": "^3.0.0",
+    "nodemon": "^2.0.14",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "socket.io": "^4.3.1",
     "web-vitals": "^1.0.1"
-    
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "lint": "eslint ./src index.js",
+    "lint-fix": "eslint --fix ./src index.js",
+    "build-assets": "yarn run clean-assets && NODE_ENV=production webpack -p",
+    "clean-assets": "rm -rf build/assets",
+    "heroku-postbuild": "yarn run build-assets && sequelize db:migrate",
+    "test": "jest",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
